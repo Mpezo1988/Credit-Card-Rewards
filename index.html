@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Credit Card Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(135deg,#F8FAFC 0%,#EEF2FF 50%,#F5F3FF 100%);min-height:100vh;padding:28px 20px;color:#1E1B4B}
+.wrap{max-width:1280px;margin:0 auto}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.header h1{font-size:24px;font-weight:700;color:#1E1B4B}
+.header p{color:#6B7280;font-size:12px;margin-top:2px}
+.header-btns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{padding:8px 16px;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-primary{background:#4F46E5;color:#fff;box-shadow:0 2px 8px rgba(79,70,229,0.3)}
+.btn-primary:hover{background:#4338CA}
+.btn-reset{padding:8px 12px;background:#fff;color:#9CA3AF;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit}
+.btn-reset:hover{color:#EF4444;border-color:#FECACA}
+.save-badge{display:inline-flex;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:600;transition:all .3s}
+
+/* View toggle */
+.toggle-wrap{display:flex;background:#fff;border-radius:8px;padding:3px;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.toggle-btn{padding:6px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:#6B7280}
+.toggle-btn.active{background:#4F46E5;color:#fff}
+
+/* KPIs */
+.kpis{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.kpi{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06);flex:1;min-width:155px}
+.kpi-label{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.05em}
+.kpi-value{font-size:24px;font-weight:700;margin-top:4px}
+.kpi-sub{font-size:11px;color:#9CA3AF;margin-top:2px}
+.kpi-icon{font-size:20px;opacity:.6;float:right}
+
+/* Holder summary */
+.holders{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.holder-card{background:#fff;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .15s}
+.holder-card.active{box-shadow:0 0 0 2px rgba(0,0,0,0.15)}
+.holder-name{font-weight:600;font-size:13px}
+.holder-count{font-size:11px;color:#9CA3AF}
+.holder-stats{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#6B7280}
+
+/* Util bar */
+.util-bar-wrap{display:flex;align-items:center;gap:8px;margin-top:4px}
+.util-bar-bg{flex:1;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden}
+.util-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.util-pct{font-size:11px;font-weight:600;min-width:36px;text-align:right}
+
+/* Tabs */
+.tabs{display:flex;gap:3px;margin-bottom:14px;background:#fff;border-radius:10px;padding:3px;box-shadow:0 1px 2px rgba(0,0,0,0.04);flex-wrap:wrap}
+.tab{padding:7px 14px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:#6B7280}
+.tab.active{background:#4F46E5;color:#fff}
+
+/* Card table */
+.group{margin-bottom:18px}
+.group-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:0 4px}
+.group-info{font-size:11px;color:#9CA3AF}
+.card-table-wrap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:8px 10px;text-align:left;font-weight:600;font-size:10px;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E5E7EB;background:#F9FAFB}
+td{padding:8px 10px;border-bottom:1px solid #F3F4F6}
+tr:hover td{background:#FAFAFE}
+
+/* Badge */
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-Brenna{background:#EDE9FE;color:#6D28D9;border:1px solid #C4B5FD}
+.badge-Mike{background:#DBEAFE;color:#1D4ED8;border:1px solid #93C5FD}
+.badge-Business{background:#FEF3C7;color:#B45309;border:1px solid #FCD34D}
+.badge-Store{background:#F3F4F6;color:#4B5563;border:1px solid #D1D5DB}
+
+/* Benefit pills */
+.benefits-count{cursor:pointer;font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600;border:1px solid #E0E7FF;display:inline-block}
+.benefits-count.has{background:#EEF2FF;color:#4F46E5}
+.benefits-count.empty{background:#F9FAFB;color:#9CA3AF}
+
+/* Expand row */
+.expand-row td{padding:0 14px 14px 30px;background:#FAFAFE;border-bottom:1px solid #F3F4F6}
+.expand-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-top:4px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px}
+.meta-label{color:#9CA3AF;font-weight:600;font-size:10px;text-transform:uppercase;display:block;margin-bottom:2px}
+
+/* Benefit section */
+.ben-section{margin-bottom:8px}
+.ben-header{display:flex;align-items:center;gap:4px;margin-bottom:3px}
+.ben-icon{font-size:12px}
+.ben-label{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.04em}
+.ben-label.empty{color:#D1D5DB}
+.ben-add-btn{margin-left:auto;background:none;border:1px dashed #D1D5DB;border-radius:4px;font-size:10px;color:#9CA3AF;cursor:pointer;padding:1px 6px;font-family:inherit}
+.ben-pills{display:flex;flex-wrap:wrap;gap:3px}
+.ben-pill{display:inline-flex;align-items:center;gap:3px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:5px;padding:2px 7px;font-size:11px;color:#374151}
+.ben-pill button{background:none;border:none;cursor:pointer;color:#D1D5DB;font-size:11px;padding:0 1px;line-height:1}
+.ben-pill button:hover{color:#EF4444}
+.ben-input-row{display:flex;gap:4px;margin-top:3px}
+.ben-input{flex:1;padding:3px 6px;font-size:12px;border:1px solid #A5B4FC;border-radius:4px;outline:none;font-family:inherit}
+.ben-input-add{padding:3px 8px;background:#4F46E5;color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit}
+.ben-input-cancel{padding:3px 8px;background:#F3F4F6;border:none;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit}
+
+/* Editable cell */
+.editable{cursor:pointer;padding:3px 6px;border-radius:4px;border:1px dashed transparent;transition:all .15s;min-height:22px}
+.editable:hover{border:1px dashed #A5B4FC;background:#F5F3FF}
+.editable.zero{color:#9CA3AF}
+.editable.placeholder{color:#D1D5DB}
+.edit-input{width:100%;padding:3px 6px;font-size:13px;border:2px solid #6366F1;border-radius:4px;outline:none;background:#EEF2FF;font-family:inherit}
+
+/* Delete btn */
+.del-btn{background:none;border:none;cursor:pointer;color:#D1D5DB;font-size:14px;padding:2px 4px;border-radius:4px}
+.del-btn:hover{color:#EF4444;background:#FEF2F2}
+
+/* Expand arrow */
+.arrow{cursor:pointer;font-size:10px;color:#9CA3AF;display:inline-block;transition:transform .2s;user-select:none}
+.arrow.open{transform:rotate(90deg)}
+
+/* Benefits view */
+.benefits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px}
+.benefit-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.benefit-card-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.benefit-card-body{padding:10px 16px}
+.benefit-card-name{font-weight:700;font-size:14px;color:#1E1B4B}
+.benefit-card-fee{font-size:11px;color:#B45309}
+.benefit-card-value{font-size:12px;color:#059669;font-weight:600}
+.benefit-card-count{font-size:10px;color:#9CA3AF}
+
+select{padding:3px 6px;border-radius:5px;border:1px solid #E5E7EB;font-size:12px;font-family:inherit;width:100%}
+input[type=checkbox]{cursor:pointer}
+
+@media(max-width:900px){
+  .holders{grid-template-columns:repeat(2,1fr)}
+  .expand-grid{grid-template-columns:1fr}
+  .meta-grid{grid-template-columns:1fr 1fr}
+  .benefits-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .holders{grid-template-columns:1fr}
+  .kpis{flex-direction:column}
+  body{padding:16px 10px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+// ============ DATA ============
+const DEFAULT_CARDS=[
+{id:1,name:"Discover",category:"Cash Back",bestUse:"",holder:"Brenna",limit:14000,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:["1% on all purchases"],credits:[],travel:[],protections:["Free FICO score","No late fee on first late payment","SS# alerts on Experian"],perks:["No foreign transaction fees"]},
+{id:2,name:"Citi Double Cash",category:"Cash Back",bestUse:"2% on everything",holder:"Brenna",limit:3000,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:["2% on everything (1% buy + 1% pay)"],credits:[],travel:[],protections:[],perks:["Citi Entertainment access"]},
+{id:3,name:"Citi Diamond Preferred",category:"Balance Transfer",bestUse:"Balance Transfer",holder:"Brenna",limit:6200,balance:1562,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:[],credits:[],travel:[],protections:[],perks:["0% intro APR on balance transfers"]},
+{id:4,name:"Chase Sapphire Preferred",category:"Travel",bestUse:"Dining, Travel, Streaming",holder:"Brenna",limit:7500,balance:0,annualFee:95,addlUser:false,bonusPoints:0,rewardsValue:295,earnings:["5X on travel via Chase Travel","3X on dining, streaming, online groceries","2X on other travel","5X on Lyft rides","1X everything else"],credits:["$50/yr hotel credit via Chase Travel","DoorDash DashPass 12 months ($120 value)","10% anniversary point bonus"],travel:["No foreign transaction fees","Primary rental car insurance","Trip cancellation ($10K/person)","Trip delay ($500 after 12hr)","Lost luggage ($3,000)","Baggage delay ($100/day, 5 days)","Travel accident insurance ($500K)"],protections:["Extended warranty (+1 year)","Purchase protection (120 days, $500/item)"],perks:["1:1 transfer to Hyatt, United, Southwest, etc.","Chase Experiences (events/tickets)","Points Boost up to 1.5x on select travel"]},
+{id:5,name:"Capital One Quicksilver",category:"Cash Back",bestUse:"Don't Use",holder:"Mike",limit:5500,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:["1.5% cash back on everything"],credits:[],travel:["No foreign transaction fees"],protections:[],perks:["Hertz Five Star status"]},
+{id:6,name:"Amex Gold",category:"Rewards",bestUse:"Groceries & Restaurants (4X)",holder:"Mike",limit:30000,balance:0,annualFee:325,addlUser:true,bonusPoints:80000,rewardsValue:424,earnings:["4X restaurants worldwide (up to $50K/yr)","4X US supermarkets (up to $25K/yr)","3X flights (direct or Amex Travel)","1X everything else"],credits:["$120/yr Uber Cash ($10/mo)","$120/yr Dining Credit ($10/mo \u2014 Grubhub, Cheesecake Factory, Goldbelly, Wine.com, Five Guys)","$100/yr Resy credit ($50 per half-year)","$84/yr Dunkin' credit ($7/mo)"],travel:["No foreign transaction fees","$100 Hotel Collection credit (2+ night stays)","Baggage insurance ($1,250 carry-on, $500 checked)","Car rental loss & damage insurance"],protections:["Purchase protection (90 days)","Extended warranty (+1 year)","Return protection"],perks:["Amex Offers (targeted deals)","Amex Experiences (concerts, sports, events)","Global Dining Access by Resy"]},
+{id:7,name:"Amex Delta Reserve",category:"Travel",bestUse:"Delta Flights & Lounges",holder:"Mike",limit:17500,balance:0,annualFee:650,addlUser:true,bonusPoints:35000,rewardsValue:1080,earnings:["3X on Delta purchases","1X on everything else"],credits:["$200/yr Delta Stays hotel credit","$240/yr Resy credit ($20/mo)","$120/yr rideshare credit ($10/mo)","~$120/yr Uber One membership credit ($9.99/mo)","20% back on Delta in-flight purchases"],travel:["15 Sky Club visits/yr (unlimited at $75K spend)","Centurion Lounge + Escape Lounge access","4 guest passes per year","Companion Certificate (First/Comfort+/Main)","Free 1st checked bag (you + 8 companions)","Zone 5 priority boarding","Upgrade priority over same-tier Medallion","15% off award travel with miles","Global Entry / TSA PreCheck credit ($120/4yrs)","Hertz Presidents Circle","No foreign transaction fees"],protections:["Trip delay insurance","Trip cancellation insurance","Baggage insurance ($1,250 carry-on, $500 checked)","Car rental loss & damage insurance"],perks:["$2,500 MQD Headstart each year","MQD Boost ($1 MQD per $20 spent)","Concierge service"]},
+{id:8,name:"Capital One Venture X",category:"Travel",bestUse:"2% Everything: Amazon, Bills, Gas",holder:"Mike",limit:13500,balance:3867,annualFee:395,addlUser:true,bonusPoints:0,rewardsValue:510,earnings:["10X hotels & rental cars via C1 Travel","5X flights & vacation rentals via C1 Travel","2X on everything else"],credits:["$300/yr travel credit (via C1 Travel portal)","10,000 anniversary miles yearly (~$100+)"],travel:["Capital One Lounges access","Priority Pass lounges (cardholder only)","Global Entry / TSA PreCheck ($120 credit)","Hertz Presidents Circle","Premier Collection hotels ($100 credit + breakfast)","Lifestyle Collection hotels ($50 credit)","No foreign transaction fees","Travel accident insurance"],protections:["Lost luggage reimbursement","24-hour travel assistance"],perks:["1:1 transfer to airline/hotel partners","Capital One Dining (prime reservations)","PRIOR subscription ($149 value \u2014 curated trips)","Price prediction on flights","Capital One Entertainment access"]},
+{id:9,name:"Discover It",category:"Cash Back",bestUse:"5% Quarterly Categories",holder:"Mike",limit:14000,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:["5% rotating quarterly categories (up to $1,500/qtr)","1% on everything else"],credits:["Cashback Match (doubles ALL cash back in first year)"],travel:["No foreign transaction fees"],protections:["Free FICO score","No late fee on first late payment","SS# alerts on Experian"],perks:[]},
+{id:10,name:"Navy Federal",category:"Balance Transfer",bestUse:"0% Fee / 0% Balance Transfer",holder:"Mike",limit:7200,balance:4200,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:[],credits:[],travel:[],protections:[],perks:["No balance transfer fee","0% intro APR on balance transfers"]},
+{id:11,name:"Amex Delta Platinum (Biz)",category:"Travel/Biz",bestUse:"Korpez Business",holder:"Business",limit:10000,balance:0,annualFee:350,addlUser:true,bonusPoints:110000,rewardsValue:640,earnings:["3X on Delta & hotel purchases","1.5X transit, US shipping, purchases $5K+","1X everything else"],credits:["$200/yr Delta Stays hotel credit","$120/yr Resy credit ($10/mo)","$120/yr rideshare credit ($10/mo)","~$120/yr Uber One membership credit"],travel:["Companion Certificate (Main cabin)","Free 1st checked bag (you + 8 companions)","Zone 5 priority boarding","Upgrade priority (after Reserve/Medallion)","15% off award travel with miles","Global Entry / TSA PreCheck credit","Hertz Five Star status","No foreign transaction fees","Trip delay insurance"],protections:["Baggage insurance","Car rental loss & damage insurance"],perks:["$2,500 MQD Headstart each year","MQD Boost ($1 MQD per $20 spent)","Up to 99 employee cards at no cost"]},
+{id:12,name:"Chase Ink",category:"Business",bestUse:"Korpez Business",holder:"Business",limit:1000,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:["Varies by Ink card version"],credits:[],travel:[],protections:["Cell phone protection (if Ink Preferred)","Purchase protection","Extended warranty"],perks:["Employee cards at no cost"]},
+{id:13,name:"Divvy",category:"Business",bestUse:"Korpez Business",holder:"Business",limit:1000,balance:0,annualFee:0,addlUser:true,bonusPoints:0,rewardsValue:0,earnings:["Varies by plan"],credits:[],travel:[],protections:[],perks:["Expense management platform","Virtual cards","Automated receipt matching"]},
+{id:14,name:"Care Credit",category:"Store",bestUse:"Medical / Health",holder:"Store",limit:4000,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:[],credits:["0% promo financing 6-24 months"],travel:[],protections:[],perks:["Accepted at 250K+ healthcare locations"]},
+{id:15,name:"Ashley's Furniture",category:"Store",bestUse:"Furniture",holder:"Store",limit:3000,balance:466,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:[],credits:["0% promo financing 6-24 months"],travel:[],protections:[],perks:[]}
+];
+
+const STORAGE_KEY="cc-dashboard-v2";
+const HOLDERS=["Brenna","Mike","Business","Store"];
+const SECTIONS=["earnings","credits","travel","protections","perks"];
+const SEC_ICONS={earnings:"\u{1F4B0}",credits:"\u{1F3F7}\uFE0F",travel:"\u2708\uFE0F",protections:"\u{1F6E1}\uFE0F",perks:"\u2B50"};
+const SEC_LABELS={earnings:"Earning Rates",credits:"Credits & Offers",travel:"Travel Benefits",protections:"Protections",perks:"Perks & Extras"};
+const H_BORDER={Brenna:"#C4B5FD",Mike:"#93C5FD",Business:"#FCD34D",Store:"#D1D5DB"};
+const H_BG={Brenna:"#EDE9FE",Mike:"#DBEAFE",Business:"#FEF3C7",Store:"#F3F4F6"};
+const H_TEXT={Brenna:"#6D28D9",Mike:"#1D4ED8",Business:"#B45309",Store:"#4B5563"};
+
+// ============ STATE ============
+let cards, activeTab="all", expandedCard=null, currentView="cards", saveTimer=null;
+
+function loadCards(){
+  try{const r=localStorage.getItem(STORAGE_KEY);if(r){const p=JSON.parse(r);if(p.cards&&Array.isArray(p.cards))return p.cards}}catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_CARDS));
+}
+function saveCards(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify({cards,savedAt:new Date().toISOString()}));showSaved()}catch(e){}
+  },500);
+}
+function showSaved(){
+  const el=document.getElementById("save-badge");if(!el)return;
+  el.textContent="\u2713 Saved";el.style.background="#D1FAE5";el.style.color="#065F46";el.style.display="inline-flex";
+  setTimeout(()=>{el.style.display="none"},2000);
+}
+
+cards=loadCards();
+
+// ============ HELPERS ============
+const fmt=n=>"$"+Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0});
+const pct=n=>(n*100).toFixed(1)+"%";
+const esc=s=>{const d=document.createElement("div");d.textContent=s;return d.innerHTML};
+function benCount(c){return c.earnings.length+c.credits.length+c.travel.length+c.protections.length+c.perks.length}
+
+// ============ RENDER ============
+function render(){
+  const totalLimit=cards.reduce((s,c)=>s+c.limit,0);
+  const totalBalance=cards.reduce((s,c)=>s+c.balance,0);
+  const totalFees=cards.reduce((s,c)=>s+c.annualFee,0);
+  const totalRewards=cards.reduce((s,c)=>s+c.rewardsValue,0);
+  const totalCreds=cards.reduce((s,c)=>s+c.credits.length,0);
+  const util=totalLimit>0?totalBalance/totalLimit:0;
+  const filtered=activeTab==="all"?cards:activeTab==="debt"?cards.filter(c=>c.balance>0):cards.filter(c=>c.holder===activeTab);
+  const grouped={};filtered.forEach(c=>{if(!grouped[c.holder])grouped[c.holder]=[];grouped[c.holder].push(c)});
+
+  let html=`
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <h1>\u{1F4B3} Credit Card Dashboard</h1>
+        <span class="save-badge" id="save-badge" style="display:none"></span>
+      </div>
+      <p>Click any value to edit \u00B7 Changes auto-save to this browser</p>
+    </div>
+    <div class="header-btns">
+      <div class="toggle-wrap">
+        <button class="toggle-btn ${currentView==="cards"?"active":""}" onclick="currentView='cards';render();">\u{1F4B3} Cards</button>
+        <button class="toggle-btn ${currentView==="benefits"?"active":""}" onclick="currentView='benefits';render();">\u{1F381} Benefits</button>
+      </div>
+      <button class="btn btn-primary" onclick="addCard()">+ Add Card</button>
+      <button class="btn-reset" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    ${kpi("Total Credit",fmt(totalLimit),"","#4F46E5","\u{1F3E6}")}
+    ${kpi("Total Debt",fmt(totalBalance),pct(util)+" utilization",util>0.3?"#EF4444":"#10B981","\u{1F4CA}")}
+    ${kpi("Available",fmt(totalLimit-totalBalance),"","#10B981","\u2705")}
+    ${kpi("Annual Fees",fmt(totalFees),"","#F59E0B","\u{1F4CB}")}
+    ${kpi("Rewards Value",fmt(totalRewards),"Net: "+fmt(totalRewards-totalFees),"#8B5CF6","\u{1F381}")}
+    ${kpi("Active Credits",totalCreds,"statement credits","#0EA5E9","\u{1F3F7}\uFE0F")}
+  </div>
+
+  <!-- Holder cards -->
+  <div class="holders">
+    ${HOLDERS.map(h=>{
+      const hc=cards.filter(c=>c.holder===h);
+      const lim=hc.reduce((s,c)=>s+c.limit,0);
+      const bal=hc.reduce((s,c)=>s+c.balance,0);
+      const p=lim>0?bal/lim:0;
+      const col=p>0.5?"#EF4444":p>0.3?"#F59E0B":"#10B981";
+      return`<div class="holder-card ${activeTab===h?"active":""}" style="border:1px solid ${H_BORDER[h]}${activeTab===h?";box-shadow:0 0 0 2px "+H_TEXT[h]+"44":""}" onclick="activeTab=activeTab==='${h}'?'all':'${h}';render();">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="holder-name" style="color:${H_TEXT[h]}">${h}</span>
+          <span class="holder-count">${hc.length} cards</span>
+        </div>
+        <div class="util-bar-wrap"><div class="util-bar-bg"><div class="util-bar-fill" style="width:${Math.min(p*100,100)}%;background:${col}"></div></div><span class="util-pct" style="color:${col}">${pct(p)}</span></div>
+        <div class="holder-stats"><span>Debt: ${fmt(bal)}</span><span>Limit: ${fmt(lim)}</span></div>
+      </div>`;
+    }).join("")}
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    ${[{k:"all",l:"All Cards"},{k:"debt",l:"Debt Only"},...HOLDERS.map(h=>({k:h,l:h}))].map(t=>
+      `<button class="tab ${activeTab===t.k?"active":""}" onclick="activeTab='${t.k}';render();">${t.l}</button>`).join("")}
+  </div>`;
+
+  // Content
+  if(currentView==="benefits"){
+    html+=`<div class="benefits-grid">${filtered.map(c=>{
+      const tb=benCount(c);
+      return`<div class="benefit-card" style="border:1px solid ${H_BORDER[c.holder]}40">
+        <div class="benefit-card-header" style="background:linear-gradient(135deg,${H_BG[c.holder]},#fff);border-bottom:1px solid ${H_BORDER[c.holder]}40">
+          <div>
+            <div class="benefit-card-name">${esc(c.name)}</div>
+            <div style="display:flex;gap:6px;margin-top:3px;align-items:center">
+              <span class="badge badge-${c.holder}">${c.holder}</span>
+              <span style="font-size:11px;color:#6B7280">${esc(c.category)}</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            ${c.annualFee>0?`<div class="benefit-card-fee">${fmt(c.annualFee)}/yr fee</div>`:""}
+            ${c.rewardsValue>0?`<div class="benefit-card-value">${fmt(c.rewardsValue)} value</div>`:""}
+            <div class="benefit-card-count">${tb} benefits</div>
+          </div>
+        </div>
+        <div class="benefit-card-body">
+          ${SECTIONS.map(s=>renderBenSection(c.id,s,c[s])).join("")}
+        </div>
+      </div>`;
+    }).join("")}</div>`;
+  }else{
+    html+=Object.entries(grouped).map(([holder,hCards])=>{
+      const lim=hCards.reduce((s,c)=>s+c.limit,0);
+      const bal=hCards.reduce((s,c)=>s+c.balance,0);
+      return`<div class="group">
+        <div class="group-header">
+          <span class="badge badge-${holder}">${holder}</span>
+          <span class="group-info">${hCards.length} cards \u00B7 ${fmt(lim)} limit \u00B7 ${fmt(bal)} balance</span>
+        </div>
+        <div class="card-table-wrap">
+          <table>
+            <thead><tr><th>Card</th><th>Best Use</th><th>Credit Limit</th><th>Balance</th><th>Annual Fee</th><th>Rewards $</th><th>Benefits</th><th></th></tr></thead>
+            <tbody>
+              ${hCards.map(c=>{
+                const isExp=expandedCard===c.id;
+                const bc=benCount(c);
+                let row=`<tr>
+                  <td style="font-weight:600"><span class="arrow ${isExp?"open":""}" onclick="toggleExpand(${c.id})">\u25B6</span> ${editableCell(c.id,"name",c.name)}</td>
+                  <td style="max-width:200px">${editableCell(c.id,"bestUse",c.bestUse,"Add use...")}</td>
+                  <td style="font-weight:500">${editableNum(c.id,"limit",c.limit)}</td>
+                  <td style="font-weight:600;color:${c.balance>0?"#EF4444":"#9CA3AF"}">${editableNum(c.id,"balance",c.balance)}</td>
+                  <td style="color:${c.annualFee>0?"#B45309":"#9CA3AF"}">${editableNum(c.id,"annualFee",c.annualFee)}</td>
+                  <td style="color:${c.rewardsValue>0?"#059669":"#9CA3AF"};font-weight:500">${editableNum(c.id,"rewardsValue",c.rewardsValue)}</td>
+                  <td><span class="benefits-count ${bc>0?"has":"empty"}" onclick="toggleExpand(${c.id})">${bc} benefits</span></td>
+                  <td><button class="del-btn" onclick="deleteCard(${c.id})">\u00D7</button></td>
+                </tr>`;
+                if(isExp){
+                  const p=c.limit>0?c.balance/c.limit:0;
+                  const col=p>0.5?"#EF4444":p>0.3?"#F59E0B":"#10B981";
+                  row+=`<tr class="expand-row"><td colspan="8">
+                    <div class="expand-grid">
+                      <div>
+                        <div class="meta-grid">
+                          <div><span class="meta-label">Holder</span><select onchange="updateField(${c.id},'holder',this.value)">${HOLDERS.map(h=>`<option ${c.holder===h?"selected":""}>${h}</option>`).join("")}</select></div>
+                          <div><span class="meta-label">Bonus Pts</span>${editableNum(c.id,"bonusPoints",c.bonusPoints)}</div>
+                          <div><span class="meta-label">Add'l User</span><div style="margin-top:4px"><input type="checkbox" ${c.addlUser?"checked":""} onchange="updateField(${c.id},'addlUser',this.checked)"> <span style="font-size:12px">${c.addlUser?"Yes":"No"}</span></div></div>
+                          <div><span class="meta-label">Utilization</span><div class="util-bar-wrap"><div class="util-bar-bg"><div class="util-bar-fill" style="width:${Math.min(p*100,100)}%;background:${col}"></div></div><span class="util-pct" style="color:${col}">${pct(p)}</span></div></div>
+                        </div>
+                        ${renderBenSection(c.id,"earnings",c.earnings)}
+                        ${renderBenSection(c.id,"credits",c.credits)}
+                      </div>
+                      <div>
+                        ${renderBenSection(c.id,"travel",c.travel)}
+                        ${renderBenSection(c.id,"protections",c.protections)}
+                        ${renderBenSection(c.id,"perks",c.perks)}
+                      </div>
+                    </div>
+                  </td></tr>`;
+                }
+                return row;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("app").innerHTML=html;
+}
+
+// ============ HTML BUILDERS ============
+function kpi(label,value,sub,color,icon){
+  return`<div class="kpi" style="border:1px solid ${color}22"><span class="kpi-icon">${icon}</span><div class="kpi-label">${label}</div><div class="kpi-value" style="color:${color}">${value}</div>${sub?`<div class="kpi-sub">${sub}</div>`:""}</div>`;
+}
+
+function editableCell(id,field,value,placeholder){
+  const display=value?esc(value):(placeholder?`<span class="placeholder">${placeholder}</span>`:`<span style="color:#D1D5DB">click to edit</span>`);
+  return`<span class="editable ${!value?"zero":""}" onclick="startEdit(event,${id},'${field}','text')">${display}</span>`;
+}
+
+function editableNum(id,field,value){
+  return`<span class="editable ${value===0?"zero":""}" onclick="startEdit(event,${id},'${field}','number')">$${Math.abs(value).toLocaleString()}</span>`;
+}
+
+function renderBenSection(cardId,section,items){
+  const icon=SEC_ICONS[section];
+  const label=SEC_LABELS[section];
+  if(!items.length)return`<div class="ben-section"><div class="ben-header"><span class="ben-icon">${icon}</span><span class="ben-label empty">${label}</span><button class="ben-add-btn" onclick="startAddBenefit(${cardId},'${section}')">+ Add</button></div></div>`;
+  return`<div class="ben-section">
+    <div class="ben-header"><span class="ben-icon">${icon}</span><span class="ben-label">${label}</span><button class="ben-add-btn" onclick="startAddBenefit(${cardId},'${section}')">+</button></div>
+    <div class="ben-pills">${items.map((item,i)=>`<span class="ben-pill">${esc(item)} <button onclick="removeBenefit(${cardId},'${section}',${i})">x</button></span>`).join("")}</div>
+  </div>`;
+}
+
+// ============ ACTIONS ============
+function startEdit(e,id,field,type){
+  e.stopPropagation();
+  const el=e.currentTarget;
+  const card=cards.find(c=>c.id===id);
+  const val=card[field];
+  const input=document.createElement("input");
+  input.type=type==="number"?"number":"text";
+  input.value=type==="number"?val:val;
+  input.className="edit-input";
+  input.onblur=function(){
+    const nv=type==="number"?(parseFloat(this.value)||0):this.value;
+    updateField(id,field,nv);
+  };
+  input.onkeydown=function(ev){
+    if(ev.key==="Enter")this.blur();
+    if(ev.key==="Escape"){this.onblur=null;render();}
+  };
+  el.innerHTML="";
+  el.appendChild(input);
+  input.focus();
+  input.select();
+}
+
+function updateField(id,field,value){
+  const card=cards.find(c=>c.id===id);
+  if(card){card[field]=value;saveCards();render();}
+}
+
+function toggleExpand(id){expandedCard=expandedCard===id?null:id;render();}
+
+function addCard(){
+  const nid=Math.max(...cards.map(c=>c.id))+1;
+  cards.push({id:nid,name:"New Card",category:"Cash Back",bestUse:"",holder:"Mike",limit:0,balance:0,annualFee:0,addlUser:false,bonusPoints:0,rewardsValue:0,earnings:[],credits:[],travel:[],protections:[],perks:[]});
+  saveCards();render();
+}
+
+function deleteCard(id){
+  cards=cards.filter(c=>c.id!==id);
+  if(expandedCard===id)expandedCard=null;
+  saveCards();render();
+}
+
+function resetAll(){
+  if(confirm("Reset all data to defaults? This cannot be undone.")){
+    cards=JSON.parse(JSON.stringify(DEFAULT_CARDS));
+    expandedCard=null;
+    saveCards();render();
+  }
+}
+
+function startAddBenefit(cardId,section){
+  const card=cards.find(c=>c.id===cardId);
+  if(!card)return;
+  // Find the section's ben-pills or ben-header
+  const secs=document.querySelectorAll(".ben-section");
+  // Use a prompt for simplicity (no framework)
+  const val=prompt("Add "+SEC_LABELS[section]+":");
+  if(val&&val.trim()){
+    card[section].push(val.trim());
+    saveCards();render();
+  }
+}
+
+function removeBenefit(cardId,section,idx){
+  const card=cards.find(c=>c.id===cardId);
+  if(card){card[section].splice(idx,1);saveCards();render();}
+}
+
+// ============ INIT ============
+render();
+</script>
+</body>
+</html>
